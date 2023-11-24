@@ -94,11 +94,29 @@ function Test() {
     const to = res.to;
     const contractAddress = res.contractAddress;
     const logs = res.logs;
+    const logsLength = logs.length;
 
     result += "[from] : " + from + "\n";
     result += "[to] : " + to + "\n";
     result += "[contractAddress] : " + contractAddress + "\n";
-    result += "[logs] : " + JSON.stringify(parseBigint(logs)) + "\n";
+    result += "[logs] length : " + logsLength + "\n";
+
+    let log = "";
+    for (let i = 0; i < logsLength; i++) {
+      const topicLength = logs[i].topics.length;
+      log += "----------------------------------------------------------\n\n";
+      log += "[log " + i + "]\n";
+      log += "address : " + logs[i].address + "\n";
+      log += "data : " + logs[i].data + "\n\n";
+      for (let j = 0; j < topicLength; j++) {
+        log += "[topic " + j + "]\n" + logs[i].topics[j] + "\n";
+      }
+    }
+    result += "\n" + log;
+
+    // "\n" +
+    // JSON.stringify(parseBigint(logs)) +
+    // "\n";
 
     setResponse(result);
   }
@@ -142,7 +160,7 @@ function Test() {
             <br />
             <br />
             {/* 0. RPC URL */}
-            &nbsp;0. RPC URL
+            &nbsp;RPC URL
             <br />
             <div className="flex-wrapper">
               <input
@@ -158,7 +176,7 @@ function Test() {
             </div>
             <br />
             {/* 1. GetCurrentBlockNumber */}
-            &nbsp;1. GetCurrentBlockNumber
+            &nbsp;GetCurrentBlockNumber
             <br />
             <div className="flex-wrapper">
               <input
@@ -174,7 +192,7 @@ function Test() {
             </div>
             <br />
             {/* 2. GetBlockData */}
-            &nbsp;2. GetBlockData
+            &nbsp;GetBlockData
             <div className="flex-wrapper">
               <input
                 className="w-input"
@@ -189,7 +207,7 @@ function Test() {
             </div>
             <br />
             {/* 3. GetTransaction */}
-            &nbsp;3. GetTransactionReceipt
+            &nbsp;GetTransactionReceipt
             <div className="flex-wrapper">
               <input
                 className="w-input"
@@ -207,7 +225,7 @@ function Test() {
             </div>
             <br />
             {/* 4.  */}
-            &nbsp;5. ParseLogs (TODO)
+            &nbsp;ParseLogs (TODO)
             <div className="flex-wrapper">
               <input
                 disabled={true}
