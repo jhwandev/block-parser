@@ -86,10 +86,27 @@ function Test() {
   }
 
   async function getTransactionReceipt() {
+    let result = "";
     const res = await rpcCall.getTransactionReceipt(provider, trHash);
+
     console.log(res);
-    setResponse(JSON.stringify(res));
+    const from = res.from;
+    const to = res.to;
+    const contractAddress = res.contractAddress;
+    const logs = res.logs;
+
+    result += "[from] : " + from + "\n";
+    result += "[to] : " + to + "\n";
+    result += "[contractAddress] : " + contractAddress + "\n";
+    result += "[logs] : " + JSON.stringify(parseBigint(logs)) + "\n";
+
+    setResponse(result);
   }
+
+  const parseBigint = (data) =>
+    JSON.stringify(data, (key, value) =>
+      typeof value === "bigint" ? value.toString() : value
+    );
   // -----------------------------------
   return (
     <>
@@ -190,9 +207,10 @@ function Test() {
             </div>
             <br />
             {/* 4.  */}
-            &nbsp;5. ParseLogs
+            &nbsp;5. ParseLogs (TODO)
             <div className="flex-wrapper">
               <input
+                disabled={true}
                 className="w-input"
                 name="trReceipt"
                 value={trReceipt}
@@ -203,7 +221,7 @@ function Test() {
                 className="connect-btn-sm"
                 onClick={getTransactionReceipt}
               >
-                CALL
+                PARSE
               </button>
             </div>
             <br />

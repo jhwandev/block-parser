@@ -32,8 +32,8 @@ export const getBlockData = async (provider, blockNumber) => {
 export const getTransactionReceipt = async (provider, transactionHash) => {
   const receipt = await provider.eth.getTransactionReceipt(transactionHash);
   console.log(receipt);
-  const result = parseBigint(receipt);
-  return result;
+
+  return receipt;
 };
 
 const parseBigint = (data) =>
