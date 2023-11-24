@@ -14,7 +14,7 @@ function Test() {
   /**
    * params
    */
-  const [rpcUrl, setRpcUrl] = useState("");
+  const [rpcUrl, setRpcUrl] = useState("https://rpc.mevblocker.io/fast");
   const [currentBlockNumber, setCurrentBlockNumber] = useState("");
   const [blockNumber, setBlockNumber] = useState("");
   const [trHash, setTrHash] = useState("");
@@ -62,63 +62,78 @@ function Test() {
   };
 
   async function getCurrentBlock() {
-    const currentBlockNumber = await rpcCall.getCurrentBlockNumber(provider);
-    console.log(currentBlockNumber);
-    setCurrentBlockNumber(currentBlockNumber);
+    if (provider === undefined) {
+      setResponse("Set RPC Provider First!");
+      return;
+    } else {
+      const currentBlockNumber = await rpcCall.getCurrentBlockNumber(provider);
+      console.log(currentBlockNumber);
+      setCurrentBlockNumber(currentBlockNumber);
+    }
   }
 
   async function getBlockData() {
-    const blockData = await rpcCall.getBlockData(provider, blockNumber);
-    const transactionsLength = blockData.transactions.length;
+    if (provider === undefined) {
+      setResponse("Set RPC Provider First!!");
+      return;
+    } else {
+      const blockData = await rpcCall.getBlockData(provider, blockNumber);
+      const transactionsLength = blockData.transactions.length;
 
-    if (transactionsLength) {
-      let result = "";
-      console.log(blockData.transactions);
+      if (transactionsLength) {
+        let result = "";
+        console.log(blockData.transactions);
 
-      result +=
-        "[SUCCESS] Total Transaction Length : " + transactionsLength + "\n";
+        result +=
+          "[SUCCESS] Total Transaction Length : " + transactionsLength + "\n";
 
-      for (let i = 0; i < transactionsLength; i++) {
-        result += "[" + i + "] " + blockData.transactions[i] + "\n";
+        for (let i = 0; i < transactionsLength; i++) {
+          result += "[" + i + "] " + blockData.transactions[i] + "\n";
+        }
+        setResponse(result);
       }
-      setResponse(result);
     }
   }
 
   async function getTransactionReceipt() {
-    let result = "";
-    const res = await rpcCall.getTransactionReceipt(provider, trHash);
+    if (provider === undefined) {
+      setResponse("Set RPC Provider First!!!");
+      return;
+    } else {
+      let result = "";
+      const res = await rpcCall.getTransactionReceipt(provider, trHash);
 
-    console.log(res);
-    const from = res.from;
-    const to = res.to;
-    const contractAddress = res.contractAddress;
-    const logs = res.logs;
-    const logsLength = logs.length;
+      console.log(res);
+      const from = res.from;
+      const to = res.to;
+      const contractAddress = res.contractAddress;
+      const logs = res.logs;
+      const logsLength = logs.length;
 
-    result += "[from] : " + from + "\n";
-    result += "[to] : " + to + "\n";
-    result += "[contractAddress] : " + contractAddress + "\n";
-    result += "[logs] length : " + logsLength + "\n";
+      result += "[from] : " + from + "\n";
+      result += "[to] : " + to + "\n";
+      result += "[contractAddress] : " + contractAddress + "\n";
+      result += "[logs] length : " + logsLength + "\n";
 
-    let log = "";
-    for (let i = 0; i < logsLength; i++) {
-      const topicLength = logs[i].topics.length;
-      log += "----------------------------------------------------------\n\n";
-      log += "[log " + i + "]\n";
-      log += "address : " + logs[i].address + "\n";
-      log += "data : " + logs[i].data + "\n\n";
-      for (let j = 0; j < topicLength; j++) {
-        log += "[topic " + j + "]\n" + logs[i].topics[j] + "\n";
+      let log = "";
+      for (let i = 0; i < logsLength; i++) {
+        const topicLength = logs[i].topics.length;
+        log += "----------------------------------------------------------\n\n";
+        log += "[log " + i + "]\n";
+        log += "address : " + logs[i].address + "\n";
+        log += "data : " + logs[i].data + "\n\n";
+        for (let j = 0; j < topicLength; j++) {
+          log += "[topic " + j + "]\n" + logs[i].topics[j] + "\n";
+        }
       }
+      result += "\n" + log;
+
+      // "\n" +
+      // JSON.stringify(parseBigint(logs)) +
+      // "\n";
+
+      setResponse(result);
     }
-    result += "\n" + log;
-
-    // "\n" +
-    // JSON.stringify(parseBigint(logs)) +
-    // "\n";
-
-    setResponse(result);
   }
 
   const parseBigint = (data) =>
