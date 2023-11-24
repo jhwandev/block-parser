@@ -1,0 +1,285 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.img-title {
+  width: 40px;
+}
+
+.item {
+  /* min-height: 80vh; */
+  flex-basis: 23.5%;
+  flex-shrink: 1;
+  flex-grow: 1;
+  color: white;
+  text-shadow: 2px 2px 3px black;
+}
+
+.content {
+  padding-left: 10%;
+  padding-right: 10%;
+  max-width: 1100px;
+  height: 80vh;
+  margin: 0 auto;
+}
+
+.title {
+  color: white;
+  font-size: xx-large;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+  text-shadow: 5px 5px 7px black;
+}
+
+.icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.flexbox {
+  margin-top: 7vh;
+  margin-bottom: 10vh;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3em;
+  row-gap: 2em;
+}
+
+@media screen and (max-width: 1000px) {
+  .item {
+    flex-basis: 49%;
+  }
+}
+
+/* react-highlight style */
+.hljs {
+  height: 700px;
+  font-size: small;
+}
+.hljs::-webkit-scrollbar {
+  width: 3px;
+  background-color: black;
+  border-radius: 55px;
+}
+.hljs::-webkit-scrollbar-thumb {
+  background-color: rgb(255, 255, 255);
+  border-radius: 55px;
+}
+
+/* component */
+.w-btn {
+  border: 0;
+  padding: 15px 30px;
+  transition: 0.25s;
+  background-color: transparent;
+  color: white;
+}
+
+.active {
+  background-color: #282c34;
+}
+
+.r-btn {
+  color: #282c34;
+}
+
+.w-btn:hover {
+  background-color: #282c34;
+  cursor: pointer;
+}
+
+.w-btn:active {
+  transform: scale(1.1);
+}
+
+.w-input {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  width: 99%;
+  height: 32px;
+  font-size: 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(233, 233, 233);
+  background-color: black;
+  color: white;
+}
+
+.flex-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.w-selectbox {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  width: 99.8%;
+  height: 32px;
+  font-size: 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(233, 233, 233);
+  background-color: black;
+  color: white;
+}
+
+.w-textarea {
+  width: 99%;
+  height: 335px;
+  margin-top: 2px;
+  color: white;
+  background-color: black;
+  resize: none;
+  font-size: medium;
+}
+
+.m-textarea {
+  width: 99%;
+  height: 100%;
+  margin-top: 2px;
+  color: white;
+  background-color: black;
+  resize: none;
+  font-size: medium;
+}
+
+.m-textarea2 {
+  width: 99%;
+  height: 315px;
+  margin-top: 2px;
+  color: white;
+  background-color: black;
+  resize: none;
+  font-size: medium;
+}
+
+.w-textarea::-webkit-scrollbar {
+  width: 3px;
+  background-color: black;
+  border-radius: 55px;
+}
+
+.w-textarea::-webkit-scrollbar-thumb {
+  background-color: rgb(255, 255, 255);
+  border-radius: 55px;
+}
+
+.connect-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 60px;
+  padding: 15px 30px;
+  border-radius: 15px;
+  background-color: black;
+  border: 0;
+  transition: 0.25s;
+  color: white;
+  font-weight: 600;
+  font-size: small;
+  border: 1px solid rgb(147, 147, 147);
+}
+
+.connect-btn-sm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+  min-height: 35px;
+  height: 35px;
+  padding: 15px 30px;
+  border-radius: 5px;
+  background-color: black;
+  border: 0;
+  transition: 0.25s;
+  color: white;
+  font-weight: 600;
+  font-size: small;
+  border: 1px solid rgb(147, 147, 147);
+}
+.connect-btn-sm:hover,
+.connect-btn:hover {
+  background-color: #ffffff;
+  color: black;
+  cursor: pointer;
+}
+.connect-btn-sm:active,
+.connect-btn:active {
+  transform: scale(1.1);
+}
+
+/* header */
+.header-section {
+  width: 100%;
+  height: 10vh;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: black;
+}
+.header-logo {
+  flex: 1;
+  padding: 0 0 0 0px;
+}
+
+.header-nav {
+  flex: 9;
+}
+
+.header-nav ul {
+  display: flex;
+  justify-content: center;
+}
+
+.header-nav ul li {
+  margin: 0 15px;
+}
+
+.header-right {
+  flex: 2;
+  margin-right: 30px;
+}
+
+.header-right ul {
+  display: flex;
+  justify-content: flex-end;
+}
