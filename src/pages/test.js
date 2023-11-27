@@ -1,10 +1,10 @@
 import { useState } from "react";
 import * as rpcCall from "../lib/rpc-call";
 import Web3 from "web3";
+import * as abi from "../lib/contract-abi";
 
 function Test() {
   const [response, setResponse] = useState("hello world.");
-  const [responseObject, setResponseObject] = useState();
   const [isDisabled, setIsDisabled] = useState(true);
   const [chainId, setChainId] = useState("1");
 
@@ -103,6 +103,9 @@ function Test() {
       let result = "";
       const res = await rpcCall.getTransactionReceipt(provider, trHash);
 
+      //todo 제거
+      setTrReceipt(res);
+
       console.log(res);
       const from = res.from;
       const to = res.to;
@@ -122,8 +125,20 @@ function Test() {
         log += "[log " + i + "]\n";
         log += "address : " + logs[i].address + "\n";
         log += "data : " + logs[i].data + "\n\n";
+
         for (let j = 0; j < topicLength; j++) {
-          log += "[topic " + j + "]\n" + logs[i].topics[j] + "\n";
+          if (logs[i].topics[j] === abi.funcTransfer) {
+            log += "[topic " + j + "][Transfer] \n" + logs[i].topics[j] + "\n";
+          } else if (logs[i].topics[j] === abi.orderFullfilled) {
+            log +=
+              "[topic " +
+              j +
+              "][orderFullfilled] \n" +
+              logs[i].topics[j] +
+              "\n";
+          } else {
+            log += "[topic " + j + "]\n" + logs[i].topics[j] + "\n";
+          }
         }
       }
       result += "\n" + log;
@@ -134,6 +149,14 @@ function Test() {
 
       setResponse(result);
     }
+  }
+
+  async function decodeLogs() {
+    // console.log(trReceipt);
+    const res = await rpcCall.decodeLogs(provider, trReceipt);
+    console.log(res);
+    setResponse(res);
+    // let event = await provider.abi.decodeLog(contract_abi.abiOrderFulfilled, receipt.logs[idx].data, receipt.logs[idx].topics.slice(1));
   }
 
   const parseBigint = (data) =>
@@ -240,21 +263,17 @@ function Test() {
             </div>
             <br />
             {/* 4.  */}
-            &nbsp;ParseLogs (TODO)
+            &nbsp;DecodeLogs
             <div className="flex-wrapper">
               <input
-                disabled={true}
                 className="w-input"
                 name="trReceipt"
                 value={trReceipt}
                 onChange={handleChange}
                 placeholder="transaction Receipts (ex: 0x...)"
               />
-              <button
-                className="connect-btn-sm"
-                onClick={getTransactionReceipt}
-              >
-                PARSE
+              <button className="connect-btn-sm" onClick={decodeLogs}>
+                DECODE
               </button>
             </div>
             <br />

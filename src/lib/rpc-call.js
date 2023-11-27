@@ -1,3 +1,5 @@
+import * as abis from "./contract-abi.js";
+
 // const getClient = async () => {
 //   const INFURA_RPC_URL = process.env.REACT_APP_INFURA_RPC_URL;
 //   const web3 = new Web3(INFURA_RPC_URL);
@@ -34,6 +36,35 @@ export const getTransactionReceipt = async (provider, transactionHash) => {
   console.log(receipt);
 
   return receipt;
+};
+
+// example tx : 0x5ff892c3806d5682ff9ab170e3ef5f47da4b71320315acd1fd07287e0ed1d46a
+export const decodeLogs = async (provider, receipt) => {
+  // receipt의 log들을 하나씩 분석
+  for (let idx = 0; idx < receipt.logs.length; idx++) {
+    if (receipt.logs[idx].topics.length <= 0) {
+      continue;
+    }
+    // log의 첫번째 topics값이 funcOrderFulfilled일 경우,
+    if (
+      receipt.logs[idx].topics[0].toUpperCase() ===
+      abis.funcOrderFulfilled.toUpperCase()
+    ) {
+      // event객체 생성, 첫번째인자
+      let event = await provider.eth.abi.decodeLog(
+        abis.abiOrderFulfilled,
+        receipt.logs[idx].data,
+        receipt.logs[idx].topics.slice(1)
+      );
+      // todo
+      const eventOffer = event.offer;
+      const offerer = event.offerer;
+      const recipient = event.recipient;
+      const zone = event.zone;
+
+      return event;
+    }
+  }
 };
 
 const parseBigint = (data) =>
