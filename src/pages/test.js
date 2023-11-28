@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as rpcCall from "../lib/rpc-call";
+import * as parseData from "../lib/parse-data";
 import Web3 from "web3";
-import * as abi from "../lib/contract-abi";
 
 function Test() {
   const [response, setResponse] = useState("hello world.");
@@ -17,7 +17,9 @@ function Test() {
   const [rpcUrl, setRpcUrl] = useState("https://rpc.mevblocker.io/fast");
   const [currentBlockNumber, setCurrentBlockNumber] = useState("");
   const [blockNumber, setBlockNumber] = useState("");
-  const [trHash, setTrHash] = useState("");
+  const [trHash, setTrHash] = useState(
+    "0x5ff892c3806d5682ff9ab170e3ef5f47da4b71320315acd1fd07287e0ed1d46a"
+  );
   const [trReceipt, setTrReceipt] = useState("");
 
   /**
@@ -47,20 +49,23 @@ function Test() {
     }
   };
 
-  // ------------------ getBlockData ------------------
+  // ------------------------------------
 
   // connect rpc url
   const onClickSetProvider = async () => {
     const web3 = new Web3(rpcUrl);
     if (web3.currentProvider) {
-      setResponse(JSON.stringify(web3.eth.currentProvider));
       setProvider(web3);
+      setResponse(
+        "Success connect RPC\n" + JSON.stringify(web3.eth.currentProvider)
+      );
     } else {
       setResponse("fail connect RPC");
     }
     return web3;
   };
 
+  // get current block number
   async function getCurrentBlock() {
     if (provider === undefined) {
       setResponse("Set RPC Provider First!");
@@ -72,6 +77,7 @@ function Test() {
     }
   }
 
+  // getBlockData - 블록내의 트랜잭션 추출
   async function getBlockData() {
     if (provider === undefined) {
       setResponse("Set RPC Provider First!!");
@@ -81,95 +87,66 @@ function Test() {
       const transactionsLength = blockData.transactions.length;
 
       if (transactionsLength) {
-        let result = "";
-        console.log(blockData.transactions);
-
-        result +=
+        let result =
           "[SUCCESS] Total Transaction Length : " + transactionsLength + "\n";
+        console.log(blockData.transactions);
 
         for (let i = 0; i < transactionsLength; i++) {
           result += "[" + i + "] " + blockData.transactions[i] + "\n";
         }
         setResponse(result);
+      } else {
+        setResponse("No Transaction");
       }
     }
   }
 
+  // getTransactionReceipt - 트랜잭션 receipt 추출
   async function getTransactionReceipt() {
     if (provider === undefined) {
       setResponse("Set RPC Provider First!!!");
       return;
     } else {
-      let result = "";
       const res = await rpcCall.getTransactionReceipt(provider, trHash);
 
-      //todo 제거
+      console.log(res);
       setTrReceipt(res);
 
-      console.log(res);
-      const from = res.from;
-      const to = res.to;
-      const contractAddress = res.contractAddress;
-      const logs = res.logs;
-      const logsLength = logs.length;
-
-      result += "[from] : " + from + "\n";
-      result += "[to] : " + to + "\n";
-      result += "[contractAddress] : " + contractAddress + "\n";
-      result += "[logs] length : " + logsLength + "\n";
-
-      let log = "";
-      for (let i = 0; i < logsLength; i++) {
-        const topicLength = logs[i].topics.length;
-        log += "----------------------------------------------------------\n\n";
-        log += "[log " + i + "]\n";
-        log += "address : " + logs[i].address + "\n";
-        log += "data : " + logs[i].data + "\n\n";
-
-        for (let j = 0; j < topicLength; j++) {
-          if (logs[i].topics[j] === abi.funcTransfer) {
-            log += "[topic " + j + "][Transfer] \n" + logs[i].topics[j] + "\n";
-          } else if (logs[i].topics[j] === abi.orderFullfilled) {
-            log +=
-              "[topic " +
-              j +
-              "][orderFullfilled] \n" +
-              logs[i].topics[j] +
-              "\n";
-          } else {
-            log += "[topic " + j + "]\n" + logs[i].topics[j] + "\n";
-          }
-        }
-      }
-      result += "\n" + log;
-
-      // "\n" +
-      // JSON.stringify(parseBigint(logs)) +
-      // "\n";
-
+      const result = parseData.parseReceipt(res);
       setResponse(result);
     }
   }
 
   async function decodeLogs() {
-    // console.log(trReceipt);
+    if (provider === undefined) {
+      setResponse("Set RPC Provider First!!!!");
+      return;
+    }
+
+    if (trReceipt === "") {
+      setResponse("Call Transaction Receipt First!");
+      return;
+    }
+
     const res = await rpcCall.decodeLogs(provider, trReceipt);
     console.log(res);
-    setResponse(res);
-    // let event = await provider.abi.decodeLog(contract_abi.abiOrderFulfilled, receipt.logs[idx].data, receipt.logs[idx].topics.slice(1));
+    const { offerer, recipient, zone, offer, consideration } = res;
+
+    //TODO 개발필요
+    setResponse(`offerer: ${offerer}`);
   }
 
-  const parseBigint = (data) =>
-    JSON.stringify(data, (key, value) =>
-      typeof value === "bigint" ? value.toString() : value
-    );
-  // -----------------------------------
+  useEffect(() => {
+    onClickSetProvider();
+  }, []);
+
+  // -----------------------------------------------------------------
   return (
     <>
       <section className="content">
         <div>
           {/* title */}
-          <div
+          {/* <div
             className="title"
             style={{
               marginTop: "70px",
@@ -177,7 +154,7 @@ function Test() {
             }}
           >
             <span>TEST</span>
-          </div>
+          </div> */}
           {/* title end */}
         </div>
         <div className="flexbox">

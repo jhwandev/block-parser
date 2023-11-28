@@ -1,10 +1,4 @@
-import * as abis from "./contract-abi.js";
-
-// const getClient = async () => {
-//   const INFURA_RPC_URL = process.env.REACT_APP_INFURA_RPC_URL;
-//   const web3 = new Web3(INFURA_RPC_URL);
-//   return web3;
-// };
+import * as abi from "./contract-abi.js";
 
 // 1. GetCurrentBlockNumber
 export const getCurrentBlockNumber = async (provider) => {
@@ -48,11 +42,11 @@ export const decodeLogs = async (provider, receipt) => {
     // log의 첫번째 topics값이 funcOrderFulfilled일 경우,
     if (
       receipt.logs[idx].topics[0].toUpperCase() ===
-      abis.funcOrderFulfilled.toUpperCase()
+      abi.funcOrderFulfilled.toUpperCase()
     ) {
       // event객체 생성, 첫번째인자
       let event = await provider.eth.abi.decodeLog(
-        abis.abiOrderFulfilled,
+        abi.abiOrderFulfilled,
         receipt.logs[idx].data,
         receipt.logs[idx].topics.slice(1)
       );
